@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class = "container">
+        <h2>Watchlist</h2>
+
+        TO-DO
+        <div class = "row">
+        {% if user.is_authenticated and users_watchlist_of_items%}
+            {% for listing in users_watchlist_of_items %}
+                <div class="card col-sm-3" style="width: 18rem;">
+                    <div class="card-header">
+                        <p id="bid">Current bid: <span id="price">{{ listing.bid }}</span></p>
+                    </div>
+                    <img class="card-img-top" src="{{ listing.url }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ listing.name_of_item}}</h5>
+                        <p class="card-text">{{ listing.description }}</p>
+                        <a href="{% url 'display_listing' listing.id %}" class="btn btn-primary"> Go to listing </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+       
+        </div>
+    </div>
+    
+{% endblock %}

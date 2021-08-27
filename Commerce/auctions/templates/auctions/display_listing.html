@@ -1,0 +1,83 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="jumbotron jumbotron-fluid" style="padding: 20px;">
+    {% if listing.is_closed and user == listing.bid.user %}
+        <div class="alert alert-success" role="alert"> 
+            Congratulations {{ listing.bid.user }}, you won the Auction!
+        </div>
+    {% endif %}
+    {% if message %}
+        <div class="alert alert-success" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+        
+         <div class="row" style="width: 100%">
+         <h2 style="margin-left:15px; margin-right: 20px">{{ listing.name_of_item }}</h2>
+         {% if is_owner and not listing.is_closed %}
+
+            <a class="btn btn-info" id="close-auction" href="{% url 'close_auction' listing.id %}"> Close Auction </a>
+
+         {% endif %}
+         
+         </div>
+    
+        
+        <br>
+        <p id="description">Description: {{ listing.description }}</p>
+        <p id="bid" >Current bid: <span id="price">{{ listing.bid }}</span></p>
+        <div class="row" style="margin: 20px">
+            {% if not is_owner and not listing.is_closed and user.is_authenticated%}
+
+                <div class="form-group">
+                    <form action="{% url 'new_bid' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="nunmber" name="new_bid" placeholder="Write a number here">
+                        <button class="btn btn-primary" type="submit">Bid</button>
+                    </form>
+                </div>
+                {% if is_listing_in_watchlist %}
+                    <div style="padding-left:15px;">
+                        <a class="btn btn-primary" href="{% url 'remove_watchlist' listing.id %}">Remove from Watchlist</a>
+                    </div>
+
+                {% else %}
+                    <div style="padding-left:15px;">
+                        <a class="btn btn-primary" href="{% url 'add_watchlist' listing.id %}">Add to Watchlist</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        <img class="card-img-top" style="width: 400px" src="{{ listing.url }}" alt=" image cap">
+        <div>
+         
+        </div>
+</div>
+
+
+<div style="padding: 2%;">
+    <h2 style="margin-right: 20px">Comments</h2>
+    
+    <form action="{% url 'add_comment' listing.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <textarea class="form-control" name="comment" placeholder="Add Comment Here"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Add Comment</button>
+    </form>
+    
+
+    {% for comment in comments %}
+    <div class="card">
+        <div class="card-header">
+            Written by {{comment.writer}}
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{comment.text}}</p>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class = "container">
+        <h2>Active Listings</h2>
+
+        
+        <form action="{% url 'category' %}" method="post">
+            {% csrf_token %}
+            <label>Choose a Category:</label>
+            <select name="category" class="form-select" aria-label="Default select example" onchange='if(this.value != 0) { this.form.submit(); }'>
+                <option selected>Open this select menu</option>
+                <option value="Pens">Pens</option>
+                <option value="Rubbers">Rubbers</option>
+                <option value="Pencils">Pencils</option>
+                <option value="Highlighters">Highlighters</option>
+            </select>
+            
+        </form>
+        <div class = "row">
+        {% for active_listings in active_listings %}
+            <div class="card col-sm-3" style="width: 18rem;">
+                <div class="card-header">
+                    <p id="bid">Current bid: <span id="price">{{ active_listings.bid }}</span></p>
+                </div>
+                <img class="card-img-top" src="{{ active_listings.url }}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{ active_listings.name_of_item}}</h5>
+                    <p class="card-text">{{ active_listings.description }}</p>
+                    <a href="{% url 'display_listing' active_listings.id %}" class="btn btn-primary"> Go to listing </a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    
+{% endblock %}
